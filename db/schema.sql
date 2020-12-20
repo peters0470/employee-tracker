@@ -1,7 +1,6 @@
-DROP TABLE IF EXISTS department;
-DROP TABLE IF EXISTS role;
-DROP TABLE IF EXISTS employee;
-
+drop table if exists department;
+drop table if exists role;
+drop table if exists employee;
 
 CREATE TABLE department (
   id INTEGER PRIMARY KEY,
