@@ -10,6 +10,26 @@ var connection = mysql.createConnection({
     database: "employees".db
 });
 
+const mainMenu = [
+    {
+      type: "list",
+      name: "firstChoice",
+      message: "What would you like to do?",
+      choices: [
+        "Add Employee",
+        "Add Role",
+        "Add Department",
+        "View All Employees",
+        "View All Employees By Role",
+        "View All Employees By Department",
+        "View All Roles",
+        "View All Departments",
+        "Update An Employee Role",
+        "Exit",
+      ],
+    },
+  ];
+
 
 connection.connect(function (err) {
     if (err) throw err;
@@ -17,7 +37,46 @@ connection.connect(function (err) {
     
   });
 
+  function init() {
+    inquirer.prompt(mainMenu).then((response) => {
+      switch (response.firstChoice) {
+        case "Add Employee":
+          employee();
+          break;
+        case "Add Role":
+          role();
+          break;
+        case "Add Department":
+          department();
+          break;
+        case "View All Employees":
+          viewEmployees();
+          break;
+        case "View All Employees By Role":
+          viewByRole();
+          break;
+        case "View All Employees By Department":
+          viewByDepartment();
+          break;
+        case "View All Roles":
+          viewRoles();
+          break;
+        case "View All Departments":
+          viewDepartments();
+          break;
+        case "Update An Employee Role":
+          updateEmployee();
+          break;
+        case "Exit":
+          connection.end();
+          break;
+        default:
+          connection.end();
+      }
+    });
+  }
 
+init();
 
   
   
