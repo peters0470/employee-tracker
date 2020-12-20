@@ -1,6 +1,10 @@
 const inquirer= require("inquirer");
 const cTable = require("console.table");
 const mysql = require("mysql2");
+let deptArr = [];
+let roleArr = [];
+let emplArr = [];
+let managerArr = [];
 
 const connection = mysql.createConnection({
     host: "localhost", 
