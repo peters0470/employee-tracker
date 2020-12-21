@@ -17,15 +17,13 @@ INSERT INTO role (role_id, title, salary, department_id) VALUES (10, "IT Manager
 
 INSERT into employee (employee_id, first_name, last_name, role_id, manager_id) VALUES (1, "John", "Wick", 3, null);
 INSERT into employee (employee_id, first_name, last_name, role_id, manager_id) VALUES (2, "Memphis", "Raines", 2, null);
-INSERT into employee (employee_id, first_name, last_name, role_id, manager_id) VALUES (3, "Marky", "Mark", 2, 1);
-INSERT into employee (employee_id, first_name, last_name, role_id, manager_id) VALUES (4, "Neo", "Anderson", 3, null);
-INSERT into employee (employee_id, first_name, last_name, role_id, manager_id) VALUES (5, "John", "MacGyver", 4, 3);
-INSERT into employee (employee_id, first_name, last_name, role_id, manager_id) VALUES (6, "Fry", "Farnsworth", 4, 3);
-INSERT into employee (employee_id, first_name, last_name, role_id, manager_id) VALUES (7, "Bender", "Rodriguez", 4, 3);
-INSERT into employee (employee_id, first_name, last_name, role_id, manager_id) VALUES (8, "Bob", "Belcher", 5, null);
-INSERT into employee (employee_id, first_name, last_name, role_id, manager_id) VALUES (9, "Homer", "Simpson", 6, 5);
-INSERT into employee (employee_id, first_name, last_name, role_id, manager_id) VALUES (10, "Peter", "Griffin", 7, 5);
-INSERT into employee (employee_id, first_name, last_name, role_id, manager_id) VALUES (11, "Rick", "Sanchez", 7, 5);
-INSERT into employee (employee_id, first_name, last_name, role_id, manager_id) VALUES (12, "Stan", "Smith", 8, 5);
-INSERT into employee (employee_id, first_name, last_name, role_id, manager_id) VALUES (13, "Roy", "Mcfreely", 9, null);
+INSERT into employee (employee_id, first_name, last_name, role_id, manager_id) VALUES (3, "Marky", "Mark", 6, 1);
+INSERT into employee (employee_id, first_name, last_name, role_id, manager_id) VALUES (4, "Neo", "Anderson", 10, null);
+INSERT into employee (employee_id, first_name, last_name, role_id, manager_id) VALUES (5, "John", "MacGyver", 7, 3);
+INSERT into employee (employee_id, first_name, last_name, role_id, manager_id) VALUES (6, "Fry", "Farnsworth", 4, null);
+INSERT into employee (employee_id, first_name, last_name, role_id, manager_id) VALUES (7, "Bender", "Rodriguez", 8, 2);
+INSERT into employee (employee_id, first_name, last_name, role_id, manager_id) VALUES (8, "Bob", "Belcher", 1, null);
+INSERT into employee (employee_id, first_name, last_name, role_id, manager_id) VALUES (9, "Homer", "Simpson", 9, 5);
+INSERT into employee (employee_id, first_name, last_name, role_id, manager_id) VALUES (10, "Peter", "Griffin", 5, 4);
+
 

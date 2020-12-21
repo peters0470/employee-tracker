@@ -34,15 +34,12 @@ const mainMenu = [
     },
   ];
   
-  // connect to the mysql server and sql database
   connection.connect(function (err) {
     if (err) throw err;
     console.log("\n WELCOME TO EMPLOYEE TRACKER \n");
-    // run the start function after the connection is made to prompt the user
     init();
   });
   
-  // Offer main menu then prompt next function based on response
   function init() {
     inquirer.prompt(mainMenu).then((response) => {
       switch (response.firstChoice) {
@@ -80,15 +77,11 @@ const mainMenu = [
           connection.end();
       }
     });
-    // update arrays each time the init function is called
     getDepts();
     getRoles();
     getManagers();
   }
   
-  // Functions to update Employee, Department and Role arrays
-  
-  // Get all departments
   function getDepts() {
     connection.query(`SELECT department_name FROM department`, function (
       err,
@@ -99,10 +92,10 @@ const mainMenu = [
       for (i = 0; i < departments.length; i++) {
         deptArr.push(departments[i].department_name);
       }
-      // console.log(deptArr);
+      
     });
   }
-  // Get all roles
+ 
   function getRoles() {
     connection.query(`SELECT title FROM role`, function (err, roles) {
       if (err) throw err;
@@ -110,10 +103,10 @@ const mainMenu = [
       for (i = 0; i < roles.length; i++) {
         roleArr.push(roles[i].title);
       }
-      // console.log(roleArr);
+      
     });
   }
-  // Get all potential managers by last name
+  
   function getManagers() {
     connection.query(`SELECT employee.last_name FROM employee`, function (
       err,
@@ -124,13 +117,13 @@ const mainMenu = [
       for (i = 0; i < managers.length; i++) {
         managerArr.push(managers[i].last_name);
       }
-      // console.log(managerArr);
+     
     });
   }
   
-  // Functions to execute main menu selections
   
-  // Add Employee
+  
+  
   function employee() {
     connection.query("SELECT * FROM role", function (err, res) {
       if (err) throw err;
@@ -174,7 +167,7 @@ const mainMenu = [
                 managerID = res2[m].employee_id;
               }
             }
-            // when finished prompting, insert a new item into the db with that info
+            
             connection.query(
               "INSERT INTO employee SET ?",
               {
@@ -192,7 +185,7 @@ const mainMenu = [
       });
     });
   }
-  // Add Role
+  
   function role() {
     connection.query("SELECT * FROM department", function (err, res) {
       if (err) throw err;
@@ -217,14 +210,12 @@ const mainMenu = [
           },
         ])
         .then(function (answer) {
-          // set corresponding department ID to variable
           let deptID;
           for (let d = 0; d < res.length; d++) {
             if (res[d].department_name == answer.departmentName) {
               deptID = res[d].department_id;
             }
           }
-          // when finished prompting, insert a new item into the db with that info
           connection.query(
             "INSERT INTO role SET ?",
             {
@@ -240,7 +231,6 @@ const mainMenu = [
         });
     });
   }
-  // Add Department
   function department() {
     inquirer
       .prompt([
@@ -251,7 +241,6 @@ const mainMenu = [
         },
       ])
       .then(function (answer) {
-        // when finished prompting, insert a new item into the db with that info
         connection.query(
           "INSERT INTO department SET ?",
           {
@@ -264,7 +253,6 @@ const mainMenu = [
         init();
       });
   }
-  // View all employees by department
   function viewByDepartment() {
     connection.query(
       `SELECT employee.employee_id, employee.first_name, employee.last_name, department.department_name FROM employee 
@@ -278,3 +266,18 @@ const mainMenu = [
       }
     );
   }
+  function viewByRole() {
+    connection.query(
+      `SELECT employee.employee_id, employee.first_name, employee.last_name, role.title, role.salary, department.department_name FROM employee 
+      LEFT JOIN role ON employee.role_id = role.role_id
+      LEFT JOIN department ON role.department_id = department.department_id 
+      ORDER BY role.title`,
+      function (err, data) {
+        if (err) throw err;
+        console.table(data);
+        init();
+      }
+    );
+  }
+ 
+
