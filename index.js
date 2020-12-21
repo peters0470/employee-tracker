@@ -318,3 +318,41 @@ const mainMenu = [
         for (i = 0; i < employees.length; i++) {
           emplArr.push(employees[i].Name);
         }
+        connection.query("SELECT * FROM role", function (err, res2) {
+            if (err) throw err;
+            inquirer
+              .prompt([
+                {
+                  name: "employeeChoice",
+                  type: "list",
+                  message: "Which employee would you like to update?",
+                  choices: emplArr,
+                },
+                {
+                  name: "roleChoice",
+                  type: "list",
+                  message: "What is the employee's new role?",
+                  choices: roleArr,
+                },
+              ])
+              .then(function (answer) {
+                let roleID;
+                for (let r = 0; r < res2.length; r++) {
+                  if (res2[r].title == answer.roleChoice) {
+                    roleID = res2[r].role_id;
+                  }
+                }
+                
+                connection.query(
+                  `UPDATE employee SET role_id = ? WHERE employee_id = (SELECT employee_id FROM(SELECT employee_id FROM employee WHERE CONCAT(first_name," ",last_name) = ?)AS NAME)`,
+                  [roleID, answer.employeeChoice],
+                  function (err) {
+                    if (err) throw err;
+                  }
+                );
+                init();
+              });
+          });
+        }
+      );
+    }
