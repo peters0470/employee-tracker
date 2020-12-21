@@ -14,12 +14,6 @@ const connection = mysql.createConnection({
     database: "employees_DB"
 });
 
-connection.connect(function (err) {
-    if (err) throw err;
-    console.log("\n WELCOME TO EMPLOYEE TRACKER \n");
-    init();
-  });
-
 const mainMenu = [
     {
       type: "list",
@@ -39,7 +33,16 @@ const mainMenu = [
       ],
     },
   ];
-
+  
+  // connect to the mysql server and sql database
+  connection.connect(function (err) {
+    if (err) throw err;
+    console.log("\n WELCOME TO EMPLOYEE TRACKER \n");
+    // run the start function after the connection is made to prompt the user
+    init();
+  });
+  
+  // Offer main menu then prompt next function based on response
   function init() {
     inquirer.prompt(mainMenu).then((response) => {
       switch (response.firstChoice) {
@@ -77,22 +80,29 @@ const mainMenu = [
           connection.end();
       }
     });
-    // getDepts();
-    // getRoles();
-    // getManagers();
+    // update arrays each time the init function is called
+    getDepts();
+    getRoles();
+    getManagers();
   }
-
+  
+  // Functions to update Employee, Department and Role arrays
+  
+  // Get all departments
   function getDepts() {
-    connection.query(`SELECT name FROM department`, function (err, departments) {
+    connection.query(`SELECT department_name FROM department`, function (
+      err,
+      departments
+    ) {
       if (err) throw err;
       deptArr = [];
       for (i = 0; i < departments.length; i++) {
-        deptArr.push(departments[i].name);
+        deptArr.push(departments[i].department_name);
       }
-      console.log(deptArr); 
+      // console.log(deptArr);
     });
   }
-
+  // Get all roles
   function getRoles() {
     connection.query(`SELECT title FROM role`, function (err, roles) {
       if (err) throw err;
@@ -100,21 +110,27 @@ const mainMenu = [
       for (i = 0; i < roles.length; i++) {
         roleArr.push(roles[i].title);
       }
-      console.log(roleArr);
+      // console.log(roleArr);
     });
   }
-
+  // Get all potential managers by last name
   function getManagers() {
-    connection.query(`SELECT employee.last_name FROM employee`, function (err, managers) {
+    connection.query(`SELECT employee.last_name FROM employee`, function (
+      err,
+      managers
+    ) {
       if (err) throw err;
       emplArr = [];
       for (i = 0; i < managers.length; i++) {
         managerArr.push(managers[i].last_name);
       }
-      console.log(managerArr);
+      // console.log(managerArr);
     });
   }
-
+  
+  // Functions to execute main menu selections
+  
+  // Add Employee
   function employee() {
     connection.query("SELECT * FROM role", function (err, res) {
       if (err) throw err;
@@ -158,87 +174,14 @@ const mainMenu = [
                 managerID = res2[m].employee_id;
               }
             }
-            connection.query(
-                "INSERT INTO employee SET ?",
-                {
-                  first_name: answer.first_name,
-                  last_name: answer.last_name,
-                  role_id: roleID,
-                  manager_id: managerID,
-                },
-                function (err) {
-                  if (err) throw err;
-                }
-              );
-              init();
-            });
-        });
-      });
-    }
-
-    function role() {
-        connection.query("SELECT * FROM department", function (err, res) {
-          if (err) throw err;
-          inquirer
-            .prompt([
-              {
-                name: "title",
-                type: "input",
-                message: "What is your role title?",
-              },
-              {
-                name: "salary",
-                type: "input",
-                message: "What is the salary for this role?",
-                default: "0.00",
-              },
-              {
-                name: "departmentName",
-                type: "list",
-                message: "What is your department is this role in?",
-                choices: deptArr,
-              },
-            ])
-            .then(function (answer) {
-              // set corresponding department ID to variable
-              let deptID;
-              for (let d = 0; d < res.length; d++) {
-                if (res[d].department_name == answer.departmentName) {
-                  deptID = res[d].id;
-                }
-              }
-              // when finished prompting, insert a new item into the db with that info
-              connection.query(
-                "INSERT INTO role SET ?",
-                {
-                  title: answer.title,
-                  salary: answer.salary,
-                  id: deptID,
-                },
-                function (err) {
-                  if (err) throw err;
-                }
-              );
-              init();
-            });
-        });
-      }
-
-      function department() {
-        inquirer
-          .prompt([
-            {
-              name: "department",
-              type: "input",
-              message: "What is your department name?",
-            },
-          ])
-          .then(function (answer) {
             // when finished prompting, insert a new item into the db with that info
             connection.query(
-              "INSERT INTO department SET ?",
+              "INSERT INTO employee SET ?",
               {
-                name: answer.department,
+                first_name: answer.first_name,
+                last_name: answer.last_name,
+                role_id: roleID,
+                manager_id: managerID,
               },
               function (err) {
                 if (err) throw err;
@@ -246,6 +189,92 @@ const mainMenu = [
             );
             init();
           });
+      });
+    });
+  }
+  // Add Role
+  function role() {
+    connection.query("SELECT * FROM department", function (err, res) {
+      if (err) throw err;
+      inquirer
+        .prompt([
+          {
+            name: "title",
+            type: "input",
+            message: "What is your role title?",
+          },
+          {
+            name: "salary",
+            type: "input",
+            message: "What is the salary for this role?",
+            default: "0.00",
+          },
+          {
+            name: "departmentName",
+            type: "list",
+            message: "What is your department is this role in?",
+            choices: deptArr,
+          },
+        ])
+        .then(function (answer) {
+          // set corresponding department ID to variable
+          let deptID;
+          for (let d = 0; d < res.length; d++) {
+            if (res[d].department_name == answer.departmentName) {
+              deptID = res[d].department_id;
+            }
+          }
+          // when finished prompting, insert a new item into the db with that info
+          connection.query(
+            "INSERT INTO role SET ?",
+            {
+              title: answer.title,
+              salary: answer.salary,
+              department_id: deptID,
+            },
+            function (err) {
+              if (err) throw err;
+            }
+          );
+          init();
+        });
+    });
+  }
+  // Add Department
+  function department() {
+    inquirer
+      .prompt([
+        {
+          name: "department",
+          type: "input",
+          message: "What is your department name?",
+        },
+      ])
+      .then(function (answer) {
+        // when finished prompting, insert a new item into the db with that info
+        connection.query(
+          "INSERT INTO department SET ?",
+          {
+            department_name: answer.department,
+          },
+          function (err) {
+            if (err) throw err;
+          }
+        );
+        init();
+      });
+  }
+  // View all employees by department
+  function viewByDepartment() {
+    connection.query(
+      `SELECT employee.employee_id, employee.first_name, employee.last_name, department.department_name FROM employee 
+    LEFT JOIN role ON employee.role_id = role.role_id
+    LEFT JOIN department ON role.department_id = department.department_id 
+    ORDER BY department.department_name`,
+      function (err, data) {
+        if (err) throw err;
+        console.table(data);
+        init();
       }
-
-  
+    );
+  }
