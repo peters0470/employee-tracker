@@ -293,4 +293,28 @@ const mainMenu = [
       init();
     });
   }
+  function viewEmployees() {
+    connection.query(
+      `SELECT employee.employee_id, employee.first_name, employee.last_name, role.title,
+    department.department_name AS department,role.salary,CONCAT(a.first_name, " ", a.last_name) AS manager
+    FROM employee
+    LEFT JOIN role ON employee.role_id = role.role_id
+    LEFT JOIN department ON role.department_id = department.department_id
+    LEFT JOIN employee a ON a.employee_id = employee.manager_id`,
+      function (err, data) {
+        if (err) throw err;
+        console.table(data);
+        init();
+      }
+    );
+  }
 
+  function updateEmployee() {
+    connection.query(
+      `SELECT concat(employee.first_name, ' ' ,  employee.last_name) AS Name FROM employee`,
+      function (err, employees) {
+        if (err) throw err;
+        emplArr = [];
+        for (i = 0; i < employees.length; i++) {
+          emplArr.push(employees[i].Name);
+        }
