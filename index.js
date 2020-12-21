@@ -279,5 +279,18 @@ const mainMenu = [
       }
     );
   }
- 
+  function viewRoles() {
+    connection.query(`SELECT * FROM role`, function (err, data) {
+      if (err) throw err;
+      console.table(data);
+      init();
+    });
+  }
+  function viewDepartments() {
+    connection.query(`SELECT * FROM department`, function (err, data) {
+      if (err) throw err;
+      console.table(data);
+      init();
+    });
+  }
 
