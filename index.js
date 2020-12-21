@@ -176,7 +176,76 @@ const mainMenu = [
       });
     }
 
-//nit();
+    function role() {
+        connection.query("SELECT * FROM department", function (err, res) {
+          if (err) throw err;
+          inquirer
+            .prompt([
+              {
+                name: "title",
+                type: "input",
+                message: "What is your role title?",
+              },
+              {
+                name: "salary",
+                type: "input",
+                message: "What is the salary for this role?",
+                default: "0.00",
+              },
+              {
+                name: "departmentName",
+                type: "list",
+                message: "What is your department is this role in?",
+                choices: deptArr,
+              },
+            ])
+            .then(function (answer) {
+              // set corresponding department ID to variable
+              let deptID;
+              for (let d = 0; d < res.length; d++) {
+                if (res[d].department_name == answer.departmentName) {
+                  deptID = res[d].id;
+                }
+              }
+              // when finished prompting, insert a new item into the db with that info
+              connection.query(
+                "INSERT INTO role SET ?",
+                {
+                  title: answer.title,
+                  salary: answer.salary,
+                  id: deptID,
+                },
+                function (err) {
+                  if (err) throw err;
+                }
+              );
+              init();
+            });
+        });
+      }
 
-  
+      function department() {
+        inquirer
+          .prompt([
+            {
+              name: "department",
+              type: "input",
+              message: "What is your department name?",
+            },
+          ])
+          .then(function (answer) {
+            // when finished prompting, insert a new item into the db with that info
+            connection.query(
+              "INSERT INTO department SET ?",
+              {
+                name: answer.department,
+              },
+              function (err) {
+                if (err) throw err;
+              }
+            );
+            init();
+          });
+      }
+
   
