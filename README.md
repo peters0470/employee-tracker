@@ -19,8 +19,8 @@
 
 
   ## Installation Instructions: 
-  step 1. Clone the repository. 
-  step 2. npm intall to get required packages to run the program. 
+  step 1. Clone the repository. \
+  step 2. npm intall to get required packages to run the program. \
   step 3. run node index.js to start program. 
 
   ## Test: 
